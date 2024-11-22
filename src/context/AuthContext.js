@@ -1,6 +1,9 @@
-// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { verifyToken } from '../services/api';
+import { 
+  verifyToken, 
+  updateUserProfile, 
+  deleteUserProfile 
+} from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -42,8 +45,40 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const updateUser = async (userData) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const updatedUser = await updateUserProfile(userData, token);
+      setUser(prev => ({ ...prev, ...updatedUser }));
+      localStorage.setItem('user', JSON.stringify({ ...user, ...updatedUser }));
+      return updatedUser;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  };
+
+  const deleteUser = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await deleteUserProfile(token);
+      logout();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      user, 
+      login, 
+      logout, 
+      loading,
+      updateUser,
+      deleteUser 
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -56,3 +91,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthContext;

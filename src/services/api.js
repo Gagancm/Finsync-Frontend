@@ -53,13 +53,6 @@ export const signupUser = async (userData) => {
   }
 };
 
-export const logoutUser = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userEmail');
-  localStorage.removeItem('userName');
-  localStorage.removeItem('userId');
-};
-
 export const verifyToken = async (token) => {
   try {
     const response = await fetch(`${API_URL}/users/verify`, {
@@ -79,6 +72,60 @@ export const verifyToken = async (token) => {
     return data;
   } catch (error) {
     console.error('Token verification error:', error);
+    throw error;
+  }
+};
+
+export const logoutUser = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userId');
+};
+
+export const updateUserProfile = async (userData, token) => {
+  try {
+    const response = await fetch(`${API_URL}/users/update`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(userData),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Update failed');
+    }
+    
+    return data.user;
+  } catch (error) {
+    console.error('Update error:', error);
+    throw error;
+  }
+};
+
+export const deleteUserProfile = async (token) => {
+  try {
+    const response = await fetch(`${API_URL}/users/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Delete failed');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Delete error:', error);
     throw error;
   }
 };

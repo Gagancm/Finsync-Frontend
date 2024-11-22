@@ -1,5 +1,13 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+
+const CustomAlert = ({ message }) => (
+  <div className="fixed top-4 right-4 z-50 max-w-md bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded shadow-lg">
+    <div className="font-bold">Success</div>
+    <div className="text-sm">{message}</div>
+  </div>
+);
 
 const ProfilePage = () => {
   const { user, updateUser, deleteUser, logout } = useAuth();
@@ -14,6 +22,18 @@ const ProfilePage = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(null);
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      if (isLoggingOut) {
+        clearTimeout(isLoggingOut);
+      }
+    };
+  }, [isLoggingOut]);
 
   // Handle profile picture change
   const handleProfilePicChange = (e) => {
@@ -28,32 +48,74 @@ const ProfilePage = () => {
     }
   };
 
+  const handleLogoutWithDelay = (message) => {
+    setSuccessMessage(message);
+    setShowSuccessAlert(true);
+    const timeoutId = setTimeout(() => {
+      setShowSuccessAlert(false);
+      logout();
+    }, 3000);
+    setIsLoggingOut(timeoutId);
+  };
+
   const handleSaveProfileData = async () => {
-    await updateUser({ name, email });
-    setShowProfileModal(false);
+    try {
+      await updateUser({ name, email });
+      setShowProfileModal(false);
+      
+      // Determine which fields changed
+      const changes = [];
+      if (name !== user.name) changes.push("name");
+      if (email !== user.email) changes.push("email");
+      
+      const changeMessage = changes.length > 1 
+        ? `Your ${changes.join(" and ")} were updated successfully. You will be logged out in 3 seconds.`
+        : `Your ${changes[0]} was updated successfully. You will be logged out in 3 seconds.`;
+      
+      handleLogoutWithDelay(changeMessage);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      setSuccessMessage("Failed to update profile. Please try again.");
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 3000);
+    }
   };
 
   const handleSavePassword = async () => {
-    await updateUser({ password });
-    setPassword("");
-    setShowPasswordModal(false);
+    try {
+      await updateUser({ password });
+      setPassword("");
+      setShowPasswordModal(false);
+      handleLogoutWithDelay("Password changed successfully. You will be logged out in 3 seconds.");
+    } catch (error) {
+      console.error("Failed to update password:", error);
+      setSuccessMessage("Failed to update password. Please try again.");
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 3000);
+    }
   };
 
   const handleDeleteProfile = async () => {
-    if (window.confirm("Are you sure you want to delete your profile?")) {
+    try {
       await deleteUser();
-      logout();
+      handleLogoutWithDelay("Profile deleted successfully. You will be logged out in 3 seconds.");
+    } catch (error) {
+      console.error("Failed to delete profile:", error);
+      setSuccessMessage("Failed to delete profile. Please try again.");
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 3000);
     }
     setShowDeleteModal(false);
   };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
+      {/* Success Alert */}
+      {showSuccessAlert && <CustomAlert message={successMessage} />}
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">My Profile</h2>
         <button
-        
           style={{
             borderRadius: "20px",
             boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
@@ -67,62 +129,58 @@ const ProfilePage = () => {
 
       {/* Profile Info Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div 
-        style={{
-          borderRadius: "20px",
-          boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
-          height: "130px",
-        }}
-        className="mb-12 bg-white rounded-lg shadow-lg p-6"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            {/* Profile Picture with Circle Border */}
-            <div className="relative">
-            
+        <div 
+          style={{
+            borderRadius: "20px",
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+            height: "130px",
+          }}
+          className="mb-12 bg-white rounded-lg shadow-lg p-6"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="relative">
                 <img
                   src={profilePic || "/default-avatar.png"}
-                  alt="Profile Picture"
+                  alt="Profile"
                   className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover"
                 />
-              <label
-                htmlFor="profile-pic-upload"
-                className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 shadow-md cursor-pointer"
-                title="Edit Profile Picture"
-              >
-                <span className="material-icons text-sm">edit</span>
-              </label>
-              <input
-                id="profile-pic-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleProfilePicChange}
-              />
+                <label
+                  htmlFor="profile-pic-upload"
+                  className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 shadow-md cursor-pointer"
+                  title="Edit Profile Picture"
+                >
+                  <span className="material-icons text-sm">edit</span>
+                </label>
+                <input
+                  id="profile-pic-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleProfilePicChange}
+                />
+              </div>
+              <div className="ml-6">
+                <h3 className="text-2xl font-semibold">
+                  {user.firstName} {user.lastName}
+                </h3>
+                <p className="text-gray-500">{email}</p>
+              </div>
             </div>
-            {/* User Name Display */}
-            <div className="ml-6">
-              <h3 className="text-2xl font-semibold">
-                {user.firstName} {user.lastName}
-              </h3>
-              <p className="text-gray-500">{email}</p>
-            </div>
+            <button
+              style={{
+                borderRadius: "8px",
+                boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
+                width: "120px",
+                height: "40px"
+              }}
+              className="bg-blue-600 text-white"
+              onClick={() => setShowProfileModal(true)}
+            >
+              Edit Profile
+            </button>
           </div>
-          {/* Edit Profile Button */}
-          <button
-            style={{
-              borderRadius: "8px",
-              boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
-              width: "120px",
-              height: "40px"
-            }}
-            className="bg-blue-600 text-white"
-            onClick={() => setShowProfileModal(true)}
-          >
-            Edit Profile
-          </button>
         </div>
-      </div>
       </div>
 
       {/* Account Settings Section */}
@@ -141,7 +199,6 @@ const ProfilePage = () => {
             <p className="text-sm text-gray-500">{email}</p>
             <button
               style={{
-                
                 borderRadius: "8px",
                 boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
                 width: "120px",

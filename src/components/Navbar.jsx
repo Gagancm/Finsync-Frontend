@@ -35,16 +35,6 @@ const Navbar = ({ isDrawerOpen }) => {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  const searchBarStyles = {
-    borderRadius: "50px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    backgroundColor: "white",
-    display: "flex",
-    alignItems: "center",
-    padding: "8px 16px",
-    transition: "width 0.3s ease"
-  };
-
   const commonButtonStyles = {
     borderRadius: "20px",
     boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
@@ -106,33 +96,24 @@ const Navbar = ({ isDrawerOpen }) => {
         </div>
         <div className="flex items-center gap-4 pr-6 relative">
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative flex items-center">
             <div
-              style={{
-                ...searchBarStyles,
-                width: isSearchOpen ? "300px" : "40px",
-                cursor: "pointer"
-              }}
+              style={isSearchOpen ? dropdownStyles : commonButtonStyles}
+              className={`flex items-center bg-white transition-all duration-300 overflow-hidden ${
+                isSearchOpen ? "w-60 rounded-lg" : ""
+              }`}
             >
-              {isSearchOpen ? (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    className="bg-transparent outline-none flex-1 text-sm"
-                    autoFocus
-                  />
-                  <X 
-                    className="h-5 w-5 text-gray-400 hover:text-gray-600" 
-                    onClick={() => setIsSearchOpen(false)}
-                  />
-                </>
-              ) : (
-                <Search 
-                  className="h-5 w-5 text-gray-400 hover:text-gray-600 mx-auto" 
-                  onClick={() => setIsSearchOpen(true)}
-                />
-              )}
+              <button
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="flex items-center justify-center w-10 h-10"
+              >
+                {isSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+              </button>
+              <input
+                type="text"
+                placeholder="Search..."
+                className={`w-full outline-none ${isSearchOpen ? "block mr-4" : "hidden"}`}
+              />
             </div>
           </div>
 
