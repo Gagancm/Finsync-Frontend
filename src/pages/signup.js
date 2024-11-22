@@ -136,7 +136,13 @@ const Signup = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
+      <Paper 
+      style={{
+        borderRadius: "20px",
+        boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+        
+      }}
+      elevation={3} sx={{ mt: 8, p: 4 }}>
         <Typography component="h1" variant="h5" align="center" gutterBottom>
           Sign Up
         </Typography>
@@ -216,6 +222,11 @@ const Signup = () => {
             disabled={loading}
           />
           <Button
+          style={{
+            borderRadius: "20px",
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+            
+          }}
             type="submit"
             fullWidth
             variant="contained"
