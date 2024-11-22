@@ -16,6 +16,10 @@ const Sidebar = ({ isDrawerOpen, toggleDrawer }) => {
 
   return (
     <div
+    style={{
+      borderRadius: "0 20px 20px 0",
+      boxShadow: "3px 6px 10px 0 rgba(0, 0, 0, 0.8), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 1.3)", // Drop shadow + Inner shadow
+    }}
       className={`fixed left-0 top-0 h-full bg-gray-800 text-white transition-all duration-300 ${isDrawerOpen ? 'w-60' : 'w-17'} z-20 flex flex-col`}
     >
       {/* Logo with Toggle Button */}

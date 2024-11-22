@@ -17,6 +17,10 @@ const PaymentsHistory = () => {
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
+              style={{
+                borderRadius: "20px",
+                boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+              }}
               className={`bg-white rounded-lg shadow-lg p-4 ${
                 index % 2 === 0 ? "border-l-4 border-green-400" : ""
               }`}
@@ -24,6 +28,11 @@ const PaymentsHistory = () => {
               <div className="flex justify-between items-center">
                 <p className="font-bold text-lg text-gray-700">Transaction</p>
                 <button
+                  style={{
+                    borderRadius: "20px",
+                    boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                    height: "40px",
+                  }}
                   className={`px-4 py-1 rounded-lg text-white ${
                     index % 2 === 0
                       ? "bg-green-400"
@@ -55,6 +64,11 @@ const PaymentsHistory = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, index) => (
             <div
+              style={{
+                borderRadius: "20px",
+                boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                
+              }}
               key={index}
               className="bg-white rounded-lg shadow-lg h-28 p-4"
             >
@@ -75,6 +89,11 @@ const PaymentsHistory = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(2)].map((_, index) => (
             <div
+              style={{
+                borderRadius: "20px",
+                boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                
+              }}
               key={index}
               className="bg-white rounded-lg shadow-lg h-28 p-4"
             >

@@ -7,21 +7,15 @@ const ProfilePage = () => {
   // State for the profile data
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
-  const [bio, setBio] = useState(user.bio);
-  const [jobTitle, setJobTitle] = useState(user.jobTitle);
-
-  // State for the profile picture
   const [profilePic, setProfilePic] = useState(user.profilePic);
-
-  // State for password editing
   const [password, setPassword] = useState("");
 
-  // Modal state for edit forms
+  // Modal states
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Functions for handling changes
+  // Handle profile picture change
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -35,11 +29,7 @@ const ProfilePage = () => {
   };
 
   const handleSaveProfileData = async () => {
-    await updateUser({ name, email, bio, jobTitle });
-    setName(name);
-    setEmail(email);
-    setBio(bio);
-    setJobTitle(jobTitle);
+    await updateUser({ name, email });
     setShowProfileModal(false);
   };
 
@@ -63,6 +53,11 @@ const ProfilePage = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">My Profile</h2>
         <button
+        
+          style={{
+            borderRadius: "20px",
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+          }}
           className="bg-red-600 text-white px-4 py-2 rounded-lg"
           onClick={() => setShowDeleteModal(true)}
         >
@@ -71,65 +66,117 @@ const ProfilePage = () => {
       </div>
 
       {/* Profile Info Section */}
-      <div className="mb-12 bg-white rounded-lg shadow-lg p-6">
-        <div className="flex items-center">
-          {/* Profile Picture with Circle Border */}
-          <div className="relative">
-            <img
-              src={profilePic}
-              alt="Profile Picture"
-              className="w-20 h-20 rounded-full border-4 border-blue-500"
-            />
-            {/* Edit Button for Profile Picture */}
-            <label
-              htmlFor="profile-pic-upload"
-              className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 shadow-md cursor-pointer"
-              title="Edit Profile Picture"
-            >
-              <span className="material-icons text-sm">edit</span>
-            </label>
-            <input
-              id="profile-pic-upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleProfilePicChange}
-            />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div 
+        style={{
+          borderRadius: "20px",
+          boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+          height: "130px",
+        }}
+        className="mb-12 bg-white rounded-lg shadow-lg p-6"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {/* Profile Picture with Circle Border */}
+            <div className="relative">
+            
+                <img
+                  src={profilePic || "/default-avatar.png"}
+                  alt="Profile Picture"
+                  className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover"
+                />
+              <label
+                htmlFor="profile-pic-upload"
+                className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 shadow-md cursor-pointer"
+                title="Edit Profile Picture"
+              >
+                <span className="material-icons text-sm">edit</span>
+              </label>
+              <input
+                id="profile-pic-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleProfilePicChange}
+              />
+            </div>
+            {/* User Name Display */}
+            <div className="ml-6">
+              <h3 className="text-2xl font-semibold">
+                {user.firstName} {user.lastName}
+              </h3>
+              <p className="text-gray-500">{email}</p>
+            </div>
           </div>
-
-          <div className="ml-6">
-            <h3 className="text-2xl font-semibold">{name}</h3>
-            <p className="text-sm text-gray-500">{jobTitle}</p>
-            <p className="mt-2 text-gray-700">{bio}</p>
-            <button
-              className="mt-4 text-blue-600"
-              onClick={() => setShowProfileModal(true)}
-            >
-              Edit Profile
-            </button>
-          </div>
+          {/* Edit Profile Button */}
+          <button
+            style={{
+              borderRadius: "8px",
+              boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
+              width: "120px",
+              height: "40px"
+            }}
+            className="bg-blue-600 text-white"
+            onClick={() => setShowProfileModal(true)}
+          >
+            Edit Profile
+          </button>
         </div>
+      </div>
       </div>
 
       {/* Account Settings Section */}
       <div className="mb-12">
         <h3 className="font-semibold text-lg mb-4">Account Settings</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-lg p-4">
+          <div 
+            style={{
+              borderRadius: "20px",
+              boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+              height: "130px",
+            }}
+            className="bg-white rounded-lg shadow-lg p-4 relative"
+          >
             <h4 className="text-lg font-bold text-gray-700">Email</h4>
             <p className="text-sm text-gray-500">{email}</p>
             <button
-              className="mt-2 text-blue-600"
+              style={{
+                
+                borderRadius: "8px",
+                boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
+                width: "120px",
+                height: "40px",
+                position: "absolute",
+                bottom: "45px",
+                right: "25px"
+              }}
+              className="bg-blue-600 text-white"
               onClick={() => setShowProfileModal(true)}
             >
               Edit Email
             </button>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-4">
+          <div 
+            style={{
+              borderRadius: "20px",
+              boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+              height: "130px",
+            }}
+            className="bg-white rounded-lg shadow-lg p-4 relative"
+          >
             <h4 className="text-lg font-bold text-gray-700">Password</h4>
             <p className="text-sm text-gray-500">*******</p>
             <button
-              className="mt-2 text-blue-600"
+              style={{
+                borderRadius: "8px",
+                boxShadow: "2px 4px 4px 0 rgba(0, 0, 0, 0.25)",
+                width: "160px",
+                height: "40px",
+                position: "absolute",
+                bottom: "45px",
+                right: "25px"
+              }}
+              className="bg-blue-600 text-white"
               onClick={() => setShowPasswordModal(true)}
             >
               Change Password
@@ -161,27 +208,16 @@ const ProfilePage = () => {
                 className="w-full p-2 border border-gray-300 rounded-lg"
               />
             </div>
-            <div className="mt-4">
-              <label className="block mb-2">Bio</label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-              ></textarea>
-            </div>
-            <div className="mt-4">
-              <label className="block mb-2">Job Title</label>
-              <input
-                type="text"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-              />
-            </div>
             <div className="mt-6 flex justify-end">
               <button
+                onClick={() => setShowProfileModal(false)}
+                className="mr-2 px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
                 onClick={handleSaveProfileData}
-                className="bg-blue-600 text-white p-2 rounded-lg"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
               >
                 Save Changes
               </button>
@@ -205,8 +241,14 @@ const ProfilePage = () => {
             </div>
             <div className="mt-6 flex justify-end">
               <button
+                onClick={() => setShowPasswordModal(false)}
+                className="mr-2 px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
                 onClick={handleSavePassword}
-                className="bg-blue-600 text-white p-2 rounded-lg"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
               >
                 Save Password
               </button>
@@ -226,16 +268,16 @@ const ProfilePage = () => {
             </p>
             <div className="mt-6 flex justify-end">
               <button
-                onClick={handleDeleteProfile}
-                className="bg-red-600 text-white p-2 rounded-lg mr-2"
-              >
-                Delete
-              </button>
-              <button
                 onClick={() => setShowDeleteModal(false)}
-                className="bg-gray-400 text-white p-2 rounded-lg"
+                className="mr-2 px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Cancel
+              </button>
+              <button
+                onClick={handleDeleteProfile}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg"
+              >
+                Delete
               </button>
             </div>
           </div>

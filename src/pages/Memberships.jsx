@@ -98,6 +98,11 @@ const Membership = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
         {Memberships.map((Membership) => (
           <div
+          style={{
+            borderRadius: "20px",
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+            
+          }}
             key={Membership.id}
             className={`bg-white rounded-lg shadow-lg p-4 ${
               Membership.id % 2 === 0 ? "border-l-4 border-purple-400" : ""
@@ -109,12 +114,22 @@ const Membership = () => {
               </p>
               <div className="flex space-x-2">
                 <button
+                  style={{
+                    borderRadius: "20px",
+                    boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                    width: "70px",
+                  }}
                   onClick={() => editMembership(Membership.id)}
                   className="px-3 py-1 text-blue-500 rounded bg-blue-100 hover:bg-blue-200"
                 >
                   Edit
                 </button>
                 <button
+                  style={{
+                    borderRadius: "20px",
+                    boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                    
+                  }}
                   onClick={() => deleteMembership(Membership.id)}
                   className="px-3 py-1 text-red-500 rounded bg-red-100 hover:bg-red-200"
                 >
@@ -135,6 +150,11 @@ const Membership = () => {
             </p>
             <div className="flex justify-end mt-4 -mt-9">
             <button
+              style={{
+                borderRadius: "20px",
+                boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+                
+              }}
               onClick={() => { 
                 handleDetailsClick(); 
                 handlePayment(Membership.id);

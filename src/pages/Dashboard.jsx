@@ -1,5 +1,11 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+// Import logos from components directory
+import ATTLogo from '../components/Logo/att.png';
+import AmazonLogo from '../components/Logo/amazon.png';
+import DisneyLogo from '../components/Logo/disney.png';
+import NetflixLogo from '../components/Logo/netflix.png';
+import AppleLogo from '../components/Logo/apple.png';
 
 const DashboardCard = ({ title, children, className, style }) => (
   <div className={`rounded-lg p-4 text-black ${className}`} style={style}>
@@ -8,14 +14,18 @@ const DashboardCard = ({ title, children, className, style }) => (
   </div>
 );
 
-const SubscriptionCard = ({ brand, amount, duration, dueIn, color }) => (
+const SubscriptionCard = ({ brand, amount, duration, dueIn, color, logo }) => (
   <div 
     style={{
       borderRadius: "20px",
       boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
     }}
-  className="bg-white rounded-lg shadow-lg p-4 text-black">
-    <h3 className={`font-bold text-${color}-500`}>{brand}</h3>
+    className="bg-white rounded-lg shadow-lg p-4 text-black"
+  >
+    <div className="flex items-center gap-3 mb-2">
+      <img src={logo} alt={brand} className="rounded w-12 h-12 object-contain" />
+      <h3 className={`font-bold text-${color}-500`}>{brand}</h3>
+    </div>
     <p className="text-sm mt-1">{duration}</p>
     <p className="font-bold text-lg mt-2">{amount} USD / year</p>
     <p className="text-sm mt-1">1,200 USD Every {duration}</p>
@@ -46,14 +56,14 @@ const Dashboard = () => {
         {/* Active Subscriptions */}
         <DashboardCard 
           title="1 Active Subscriptions" 
-          className="bg-yellow-400 p-6" // Added padding and background
+          className="bg-yellow-400 p-6"
           style={{
             borderRadius: "20px",
-            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)", // Drop shadow + Inner shadow
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
           }}
         >
           <div className="mt-10 flex items-center justify-between">
-            <img src="/api/placeholder/50/50" alt="AT&T" className="rounded" />
+            <img src={ATTLogo} alt="AT&T" className="rounded w-12 h-12 object-contain" />
             <button 
               style={{
                 borderRadius: "15px",
@@ -70,17 +80,17 @@ const Dashboard = () => {
         {/* Active Memberships */}
         <DashboardCard 
           title="3 Active Memberships" 
-          className="bg-blue-200 p-6" // Added padding and background
+          className="bg-blue-200 p-6"
           style={{
             borderRadius: "20px",
-            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)", // Drop shadow + Inner shadow
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
           }}
         >
           <div className="mt-10 flex items-center justify-between">
             <div className="flex gap-2">
-              <img src="/api/placeholder/50/50" alt="Amazon" className="rounded" />
-              <img src="/api/placeholder/50/50" alt="Disney" className="rounded" />
-              <img src="/api/placeholder/50/50" alt="Netflix" className="rounded" />
+              <img src={AmazonLogo} alt="Amazon" className="rounded w-12 h-12 object-contain" />
+              <img src={DisneyLogo} alt="Disney" className="rounded w-12 h-12 object-contain" />
+              <img src={NetflixLogo} alt="Netflix" className="rounded w-12 h-12 object-contain" />
             </div>
             <button 
               style={{
@@ -98,19 +108,19 @@ const Dashboard = () => {
         {/* Active EMI */}
         <DashboardCard 
           title="1 Active EMI" 
-          className="bg-purple-200 p-6" // Added padding and background
+          className="bg-purple-200 p-6"
           style={{
             borderRadius: "20px",
-            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)", // Drop shadow + Inner shadow
+            boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
           }}
         >
           <div className="mt-10 flex items-center justify-between">
-            <img src="/api/placeholder/50/50" alt="Apple" className="rounded" />
+            <img src={AppleLogo} alt="Apple" className="rounded w-12 h-12 object-contain" />
             <button 
-            style={{
-              borderRadius: "15px",
-              boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
-            }}
+              style={{
+                borderRadius: "15px",
+                boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
+              }}
               onClick={handleDetailsClick3}
               className="bg-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-colors"
             >
@@ -123,61 +133,52 @@ const Dashboard = () => {
       {/* Upcoming Dues Section */}
       <h2 className="text-xl font-semibold mb-4">Upcoming Dues</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <SubscriptionCard
-        brand="NETFLIX"
-        duration="12 MONTHS"
-        amount="1,999"
-        dueIn="2 Days"
-        color="red"
-        style={{
-          borderRadius: "20px",
-          boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
-        }}
-      />
-
-      <SubscriptionCard
-        brand="AMAZON"
-        duration="12 MONTHS"
-        amount="1,999"
-        dueIn="2 Days"
-        color="yellow"
-        style={{
-          borderRadius: "20px",
-          boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
-        }}
-      />
-
-      <SubscriptionCard
-        brand="DISNEY"
-        duration="12 MONTHS"
-        amount="1,999"
-        dueIn="2 Days"
-        color="blue"
-        style={{
-          borderRadius: "20px",
-          boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
-        }}
-      />
-    </div>
-
+        <SubscriptionCard
+          
+          logo={NetflixLogo}
+          duration="12 MONTHS"
+          amount="1,999"
+          dueIn="2 Days"
+          color="red"
+        />
+        <SubscriptionCard
+          
+          logo={AmazonLogo}
+          duration="12 MONTHS"
+          amount="1,999"
+          dueIn="2 Days"
+          color="yellow"
+        />
+        <SubscriptionCard
+          
+          logo={DisneyLogo}
+          duration="12 MONTHS"
+          amount="1,999"
+          dueIn="2 Days"
+          color="blue"
+        />
+      </div>
 
       {/* Monthly Plans Section */}
       <h2 className="text-xl font-semibold mb-4">Monthly Plans</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SubscriptionCard
-          brand="NETFLIX"
+          
+          logo={NetflixLogo}
           duration="12 MONTHS"
           amount="1,999"
           color="red"
         />
         <SubscriptionCard
-          brand="AMAZON"
+          
+          logo={AmazonLogo}
           duration="12 MONTHS"
           amount="1,999"
           color="yellow"
         />
         <SubscriptionCard
-          brand="DISNEY"
+          
+          logo={DisneyLogo}
           duration="12 MONTHS"
           amount="1,999"
           color="blue"
