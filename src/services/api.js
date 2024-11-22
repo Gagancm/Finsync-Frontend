@@ -1,83 +1,84 @@
-// src/services/api.js
-const API_URL = 'http://localhost:5000/api'; // Adjust port as needed
+const API_URL = 'http://localhost:5000/api';
 
-// Existing user authentication endpoints
 export const loginUser = async (email, password) => {
-  const response = await fetch(`${API_URL}/users/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message);
+  try {
+    const response = await fetch(`${API_URL}/users/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+    
+    if (data.token) {
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userEmail', data.user.email);
+      localStorage.setItem('userName', data.user.firstName + ' ' + data.user.lastName);
+      localStorage.setItem('userId', data.user.id);
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
   }
-  return data;
 };
 
-export const signupUser = async (email, password) => {
-  const response = await fetch(`${API_URL}/users/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message);
+export const signupUser = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/users/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Signup failed');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Signup error:', error);
+    throw error;
   }
-  return data;
+};
+
+export const logoutUser = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userId');
 };
 
 export const verifyToken = async (token) => {
-  const response = await fetch(`${API_URL}/users/verify-token`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message);
-  }
-  return data;
-};
+  try {
+    const response = await fetch(`${API_URL}/users/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
 
-// New subscription endpoints
-export const createSubscription = async (planId, token) => {
-  const response = await fetch(`${API_URL}/subscriptions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify({ planId }),
-  });
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message);
-  }
-  return data;
-};
+    const data = await response.json();
 
-export const getSubscription = async (token) => {
-  const response = await fetch(`${API_URL}/subscriptions`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message);
+    if (!response.ok) {
+      throw new Error(data.message || 'Token verification failed');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Token verification error:', error);
+    throw error;
   }
-  return data;
 };

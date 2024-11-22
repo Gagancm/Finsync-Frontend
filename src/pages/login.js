@@ -1,80 +1,106 @@
+// src/pages/login.js
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Grid, Paper } from '@mui/material';
+import { TextField, Button, Container, Typography, Paper, Snackbar, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  // Simulate login process
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    // Simulating a login check (e.g., hardcoded credentials)
-    if (email === 'user@example.com' && password === 'password123') {
-      // Store the token in localStorage to simulate login
-      localStorage.setItem('authToken', 'your-auth-token');
-      // Redirect to dashboard
+    try {
+      const { token, user } = await loginUser(formData.email, formData.password);
+      login(token, user);
       navigate('/');
-    } else {
-      alert('Invalid credentials');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-        <Typography variant="h5" align="center">Login</Typography>
-        <form onSubmit={handleLogin} noValidate>
+    <Container component="main" maxWidth="xs">
+      <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
+        <Typography component="h1" variant="h5" align="center" gutterBottom>
+          Login
+        </Typography>
+
+        <form onSubmit={handleSubmit} noValidate>
           <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
             margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={formData.email}
+            onChange={handleChange}
+            error={!!error}
           />
           <TextField
-            label="Password"
-            variant="outlined"
-            fullWidth
             margin="normal"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={formData.password}
+            onChange={handleChange}
+            error={!!error}
           />
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
             fullWidth
-            sx={{ marginTop: 2 }}
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
-            Login
+            {loading ? 'Signing in...' : 'Sign In'}
           </Button>
-          <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
-            <Grid item>
-              <Typography variant="body2" component="span">
-                Don't have an account?{' '}
-                <Link to="/signup" style={{ color: 'blue' }}>
-                  Sign Up
-                </Link>
-              </Typography>
-            </Grid>
-          </Grid>
+
+          <Typography align="center">
+            Don't have an account?{' '}
+            <Link to="/signup" style={{ color: 'primary.main' }}>
+              Sign Up
+            </Link>
+          </Typography>
         </form>
+
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError('')}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert severity="error" onClose={() => setError('')}>
+            {error}
+          </Alert>
+        </Snackbar>
       </Paper>
     </Container>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, LayoutGrid, ScrollText, Users, CreditCard, UserCircle, LogOut } from 'lucide-react';
 import SidebarItem from './SidebarItem';
+import { logoutUser } from '../services/authService'; // Import the logoutUser function
 
 const Sidebar = ({ isDrawerOpen, toggleDrawer }) => {
   const navigate = useNavigate();
@@ -9,14 +10,8 @@ const Sidebar = ({ isDrawerOpen, toggleDrawer }) => {
 
   // Logout handler function
   const handleLogout = () => {
-    // Remove the token from localStorage (or sessionStorage if that's where it's stored)
-    localStorage.removeItem('authToken');  // Assuming you store token as 'authToken'
-    
-    // Optionally clear any other user-related data
-    // localStorage.removeItem('userDetails');
-    
-    // Redirect the user to the login page
-    navigate('/login');
+    logoutUser(); // Call the logoutUser function to remove the token and user data
+    navigate('/login'); // Redirect the user to the login page
   };
 
   return (
@@ -94,10 +89,9 @@ const Sidebar = ({ isDrawerOpen, toggleDrawer }) => {
       </nav>
 
       {/* Logout Button */}
-      {/* Logout Button */}
       <div className={`p-4 ${isDrawerOpen ? 'flex justify-start' : 'flex justify-center'}`}>
         <button
-          onClick={handleLogout}  // Adding the click handler for logout
+          onClick={handleLogout}
           className="flex items-center gap-2 px-4 py-2 w-full rounded-lg hover:bg-gray-700 active:ring-4 active:ring-blue-300"
           style={{
             borderRadius: "20px",
@@ -108,7 +102,6 @@ const Sidebar = ({ isDrawerOpen, toggleDrawer }) => {
           {isDrawerOpen && <span>LOG OUT</span>}
         </button>
       </div>
-
     </div>
   );
 };
