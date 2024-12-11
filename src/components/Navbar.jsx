@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { Bell, Search, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&auto=format&fit=crop&q=60";
 
 const Navbar = ({ isDrawerOpen }) => {
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const notifications = [
     {
@@ -51,6 +56,10 @@ const Navbar = ({ isDrawerOpen }) => {
     boxShadow: "3px 6px 4px 0 rgba(0, 0, 0, 0.39), inset -5px -5px 10.2px 0 rgba(0, 0, 0, 0.38)",
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   const getPageTitle = () => {
     switch (location.pathname) {
       case "/":
@@ -82,6 +91,12 @@ const Navbar = ({ isDrawerOpen }) => {
   const handleProfileRedirect = () => {
     setIsProfileMenuOpen(false);
     navigate("/profile");
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileMenuOpen(false);
+    navigate("/login");
   };
 
   return (
@@ -170,9 +185,10 @@ const Navbar = ({ isDrawerOpen }) => {
               onClick={handleProfileClick}
             >
               <img
-                src="/api/placeholder/40/40"
+                src={user?.profilePic || (imageError ? DEFAULT_PROFILE_IMAGE : user?.profilePic || DEFAULT_PROFILE_IMAGE)}
                 alt="User profile"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-full"
+                onError={handleImageError}
               />
             </div>
             {isProfileMenuOpen && (
@@ -193,6 +209,7 @@ const Navbar = ({ isDrawerOpen }) => {
                   Change Password
                 </button>
                 <button
+                  onClick={handleLogout}
                   className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-red-500"
                 >
                   Log Out

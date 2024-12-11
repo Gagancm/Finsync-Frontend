@@ -9,14 +9,17 @@ const CustomAlert = ({ message }) => (
   </div>
 );
 
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&auto=format&fit=crop&q=60";
+
 const ProfilePage = () => {
   const { user, updateUser, deleteUser, logout } = useAuth();
 
   // State for the profile data
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [profilePic, setProfilePic] = useState(user.profilePic);
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [profilePic, setProfilePic] = useState(user?.profilePic || DEFAULT_PROFILE_IMAGE);
   const [password, setPassword] = useState("");
+  const [imageError, setImageError] = useState(false);
 
   // Modal states
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -42,10 +45,17 @@ const ProfilePage = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfilePic(reader.result);
+        setImageError(false);
         updateUser({ profilePic: reader.result });
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Handle image load error
+  const handleImageError = () => {
+    setImageError(true);
+    setProfilePic(DEFAULT_PROFILE_IMAGE);
   };
 
   const handleLogoutWithDelay = (message) => {
@@ -63,7 +73,6 @@ const ProfilePage = () => {
       await updateUser({ name, email });
       setShowProfileModal(false);
       
-      // Determine which fields changed
       const changes = [];
       if (name !== user.name) changes.push("name");
       if (email !== user.email) changes.push("email");
@@ -110,7 +119,6 @@ const ProfilePage = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Success Alert */}
       {showSuccessAlert && <CustomAlert message={successMessage} />}
 
       <div className="flex justify-between items-center mb-6">
@@ -141,9 +149,10 @@ const ProfilePage = () => {
             <div className="flex items-center">
               <div className="relative">
                 <img
-                  src={profilePic || "/default-avatar.png"}
+                  src={imageError ? DEFAULT_PROFILE_IMAGE : profilePic}
                   alt="Profile"
                   className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover"
+                  onError={handleImageError}
                 />
                 <label
                   htmlFor="profile-pic-upload"
@@ -162,7 +171,7 @@ const ProfilePage = () => {
               </div>
               <div className="ml-6">
                 <h3 className="text-2xl font-semibold">
-                  {user.firstName} {user.lastName}
+                  {user?.firstName} {user?.lastName}
                 </h3>
                 <p className="text-gray-500">{email}</p>
               </div>
