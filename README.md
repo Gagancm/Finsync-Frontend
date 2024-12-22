@@ -70,7 +70,3 @@ Personalized category creation
 
 
 
-## Authors
-
-- [@Gagancm](https://github.com/Gagancm)
-
